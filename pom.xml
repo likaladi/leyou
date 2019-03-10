@@ -11,6 +11,8 @@
         <module>ly-upload</module>
         <module>ly-search</module>
         <module>ly-goods</module>
+        <module>ly-user</module>
+        <module>ly-sms-service</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

@@ -7,10 +7,18 @@ spring:
     driverClassName: com.mysql.jdbc.Driver
     url: jdbc:mysql://localhost:3306/lyshop
     username: root
-    password: likaladi
+    password: 123456
     hikari:
       maximum-pool-size: 30
       minimum-idle: 10
+  rabbitmq:
+    host: 192.168.0.186
+    username: leyou
+    password: likaladi
+    virtual-host: leyou
+    template:
+      exchange: leyou.item.exchange
+    publisher-confirms: true
 eureka:
   client:
     service-url:

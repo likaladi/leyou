@@ -5,7 +5,9 @@ import com.github.pagehelper.PageHelper;
 import com.leyou.common.pojo.PageResult;
 import com.leyou.item.mapper.*;
 import com.leyou.item.pojo.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class GoodsService {
 
@@ -38,6 +41,9 @@ public class GoodsService {
 
     @Autowired
     private StockMapper stockMapper;
+
+    @Autowired
+    private AmqpTemplate amqpTemplate;
 
     public PageResult<SpuBo> querySpuByPageAndSort(Integer page, Integer rows, Boolean saleable, String key) {
         // 1、查询SPU
@@ -91,7 +97,20 @@ public class GoodsService {
 
         // 保存sku和库存信息
         saveSkuAndStock(spu.getSkus(), spu.getId());
+
+        sendMessage(spu.getId(), "insert");
     }
+
+    //*注意：这里要把所有异常都try起来，不能让消息的发送影响到正常的业务逻辑**
+    private void sendMessage(Long id, String type){
+        // 发送消息
+        try {
+            this.amqpTemplate.convertAndSend("item." + type, id);
+        } catch (Exception e) {
+            log.error("{}商品消息发送异常，商品id：{}", type, id, e);
+        }
+    }
+
 
     @Transactional
     public void update(SpuBo spu) {
@@ -123,6 +142,9 @@ public class GoodsService {
 
         // 更新spu详情
         this.spuDetailMapper.updateByPrimaryKeySelective(spu.getSpuDetail());
+
+        //发送消息
+        sendMessage(spu.getId(), "update");
     }
 
 

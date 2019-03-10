@@ -144,6 +144,21 @@ public class SearchService {
         return specsMap;
     }
 
+    public void createIndex(Long id) throws Exception {
+
+        Spu spu = this.goodsClient.querySpuById(id);
+        // 构建商品
+        Goods goods = this.buildGoods(spu);
+
+        // 保存数据到索引库
+        this.goodsRepository.save(goods);
+    }
+
+    public void deleteIndex(Long id) {
+        this.goodsRepository.deleteById(id);
+    }
+
+
     public static void main(String[] args) {
         String tstr = "5.0";
         System.out.println(NumberUtils.toDouble(tstr));

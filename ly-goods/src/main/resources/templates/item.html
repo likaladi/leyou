@@ -94,7 +94,8 @@
         // 特有规格参数集合
         const specialSpec = JSON.parse(/*[[${spuDetail.specTemplate}]]*/ "");
         const genericSpec = JSON.parse(/*[[${spuDetail.specifications}]]*/ []);
-        const groups = /*[[${groups}]]*/ [];
+        //const groups = /*[[${groups}]]*/ [];
+		const groups = JSON.parse(/*[[${spuDetail.specifications}]]*/ []);
         //初始化特有规格参数默认选中一个
 		const indexes = {};
 		const initIndex = skus[0].indexes.split("_");
@@ -474,10 +475,10 @@
 							<div id="two" class="tab-pane">
 								<div class="Ptable">
 									<div class="Ptable-item" v-for="group in groups" :key="group.name">
-										<h3>{{group.name}}</h3>
+										<h3>{{group.group}}</h3>
 										<dl>
 											<div v-for="p in group.params">
-												<dt>{{p.name}}</dt><dd>{{p.v + (p.unit || '')}}</dd>
+												<dt>{{p.k}}</dt><dd>{{p.v + (p.unit || '')}}</dd>
 											</div>
 										</dl>
 									</div>
@@ -491,6 +492,7 @@
 							</div>
 							<div id="three" class="tab-pane">
 								<p>售后保障</p>
+								<p th:text="${spuDetail.afterService}"></p>
 							</div>
 							<div id="four" class="tab-pane">
 								<p>商品评价</p>
@@ -658,13 +660,19 @@
             groups(){
                 groups.forEach(group => {
                     group.params.forEach(param => {
-                    if(param.generic){
-                    // 通用属性，去spu的genericSpec中获取
-                    param.v = this.genericSpec[param.id] || '其它';
-                }else{
-                    // 特有属性值，去SKU中获取
-                    param.v = JSON.parse(this.sku.ownSpec)[param.id]
-                }
+                    	if(param.global){
+							param.v = param.v || '其它';
+						}else{
+							//特有属性值，去SKU中获取
+							param.v = JSON.parse(this.sku.ownSpec)[param.k];
+						}
+                //     if(param.global){
+                //     // 通用属性，去spu的genericSpec中获取
+                //     param.v = this.genericSpec[param.id] || '其它';
+                // }else{
+                //     // 特有属性值，去SKU中获取
+                //     param.v = JSON.parse(this.sku.ownSpec)[param.filedName]
+                // }
             })
             })
                 return groups;

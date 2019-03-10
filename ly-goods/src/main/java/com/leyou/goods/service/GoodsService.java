@@ -50,12 +50,12 @@ public class GoodsService {
             // 查询分类
             List<Category> categories = getCategories(spu);
 
-            // 查询组内参数
-            List<SpecGroup> specGroups = this.specificationClient.querySpecsByCid(spu.getCid3());
-
-            // 查询所有特有规格参数
-            List<SpecParam> specParams = this.specificationClient.querySpecParam(null, spu.getCid3(), null, false);
-
+//            // 查询组内参数
+//            List<SpecGroup> specGroups = this.specificationClient.querySpecsByCid(spu.getCid3());
+//
+//            // 查询所有特有规格参数
+//            List<SpecParam> specParams = this.specificationClient.querySpecParam(null, spu.getCid3(), null, false);
+//
 //            // 处理规格参数
 //            Map<String, String> paramMap = new HashMap<>();
 //            specParams.forEach(param->{
@@ -68,8 +68,8 @@ public class GoodsService {
             map.put("skus", skus);
             map.put("brand", brands.get(0));
             map.put("categories", categories);
-            map.put("groups", specGroups);
-            //map.put("params", paramMap);
+//            map.put("groups", specGroups);
+//            map.put("params", paramMap);
             return map;
         } catch (Exception e) {
             log.error("加载商品数据出错,spuId:{}", spuId, e);
